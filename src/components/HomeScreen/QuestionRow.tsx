@@ -1,0 +1,33 @@
+import CustomText from "@/components/CustomText";
+import { useAppStore } from "@/store/useAppStore";
+import React, { memo } from "react";
+import { StyleSheet, View } from "react-native";
+
+const QuestionRow = () => {
+  const operand1 = useAppStore((s) => s.operand1);
+  const operand2 = useAppStore((s) => s.operand2);
+  const operator = useAppStore((s) => s.operator);
+  return (
+    <View style={styles.questionRow}>
+      <CustomText style={styles.operand}>{operand1}</CustomText>
+      <CustomText style={styles.operand}>{operator}</CustomText>
+      <CustomText style={styles.operand}>{operand2}</CustomText>
+    </View>
+  );
+};
+
+export default memo(QuestionRow);
+
+const styles = StyleSheet.create({
+  questionRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 10,
+  },
+  operand: {
+    fontSize: 48,
+    fontWeight: "bold",
+    lineHeight: 56,
+  },
+});

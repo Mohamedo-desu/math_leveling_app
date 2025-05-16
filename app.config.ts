@@ -90,6 +90,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       ],
     ],
     experiments: {
+      reactCompiler: true,
       reactCanary: true,
       buildCacheProvider: "eas",
     },

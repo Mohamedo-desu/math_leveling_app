@@ -1,51 +1,76 @@
 import { Colors } from "@/constants/Colors";
 import { Spacing } from "@/constants/Spacing";
-import React from "react";
+import { useAppStore } from "@/store/useAppStore";
+import React, { memo } from "react";
 import { StyleSheet, View } from "react-native";
 import AnimatedNumbers from "react-native-animated-numbers";
 import CustomText from "./CustomText";
 
-interface StatsHeaderProps {
-  corrected: number;
-  failed: number;
-  questions: number;
-  level: number;
-}
+const Corrected = memo(() => {
+  const corrected = useAppStore((s) => s.stats.corrected);
+  return (
+    <View style={styles.item}>
+      <CustomText style={styles.label}>Corrected</CustomText>
+      <AnimatedNumbers
+        includeComma
+        animateToNumber={corrected}
+        fontStyle={styles.corrected}
+      />
+    </View>
+  );
+});
+const Failed = memo(() => {
+  const failed = useAppStore((s) => s.stats.failed);
+  return (
+    <View style={styles.item}>
+      <CustomText style={styles.label}>Failed</CustomText>
+      <AnimatedNumbers
+        includeComma
+        animateToNumber={failed}
+        fontStyle={styles.failed}
+      />
+    </View>
+  );
+});
+const Questions = memo(() => {
+  const questions = useAppStore((s) => s.stats.questions);
+  return (
+    <View style={styles.item}>
+      <CustomText style={styles.label}>Questions</CustomText>
+      <AnimatedNumbers
+        includeComma
+        animateToNumber={questions}
+        fontStyle={styles.questions}
+      />
+    </View>
+  );
+});
+const Level = memo(() => {
+  const level = useAppStore((s) => s.stats.level);
+  return (
+    <View style={styles.item}>
+      <CustomText style={styles.label}>Level</CustomText>
+      <AnimatedNumbers
+        includeComma
+        animateToNumber={level}
+        fontStyle={styles.level}
+      />
+    </View>
+  );
+});
 
-const StatsHeader = ({
-  corrected,
-  failed,
-  questions,
-  level,
-}: StatsHeaderProps) => {
+const StatsHeader = () => {
   return (
     <View style={styles.container}>
-      <View style={styles.item}>
-        <CustomText style={styles.label}>corrected</CustomText>
-        <AnimatedNumbers
-          includeComma
-          animateToNumber={corrected}
-          fontStyle={styles.corrected}
-        />
-      </View>
-      <View style={styles.item}>
-        <CustomText style={styles.label}>Failed</CustomText>
-        <CustomText style={styles.failed}>{failed}</CustomText>
-      </View>
-
-      <View style={styles.item}>
-        <CustomText style={styles.label}>questions</CustomText>
-        <CustomText style={styles.questions}>{questions}</CustomText>
-      </View>
-      <View style={styles.item}>
-        <CustomText style={styles.label}>Level</CustomText>
-        <CustomText style={styles.level}>{level}</CustomText>
-      </View>
+      <Corrected />
+      <Failed />
+      <Questions />
+      <Level />
     </View>
   );
 };
 
-export default StatsHeader;
+export default memo(StatsHeader);
 
 const styles = StyleSheet.create({
   container: {
