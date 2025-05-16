@@ -1,6 +1,6 @@
 // App.tsx
 import { ThemeProvider } from "@/context/ThemeContext";
-import HomeScreen from "@/screens/HomeScreen";
+import RootLayout from "@/screens/RootLayout";
 import { registerRootComponent } from "expo";
 import * as Notifications from "expo-notifications";
 import { SafeAreaProvider } from "react-native-safe-area-context";
@@ -19,7 +19,7 @@ export default function App() {
   return (
     <SafeAreaProvider>
       <ThemeProvider>
-        <HomeScreen />
+        <RootLayout />
       </ThemeProvider>
     </SafeAreaProvider>
   );

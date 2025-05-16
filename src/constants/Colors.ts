@@ -1,11 +1,10 @@
 export const Colors = {
-  primary: "#069140",
-  secondary: "#2196F3",
+  primary: "#FFD700",
+  secondary: "#ffc400",
   white: "#ffffff",
   black: "#141414",
   correct: "#00FFB0",
   wrong: "#FF2222",
-  streak: "#FFD700",
   lightGray: {
     500: "#9E9E9E",
     400: "#BDBDBD",

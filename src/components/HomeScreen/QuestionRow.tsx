@@ -1,4 +1,6 @@
 import CustomText from "@/components/CustomText";
+import { Colors } from "@/constants/Colors";
+import { Spacing } from "@/constants/Spacing";
 import { useAppStore } from "@/store/useAppStore";
 import React, { memo } from "react";
 import { StyleSheet, View } from "react-native";
@@ -24,10 +26,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
+    backgroundColor: Colors.secondary,
+    width: "90%",
+    height: 100,
+    alignSelf: "center",
+    borderRadius: Spacing.inputBorderRadius,
+    borderWidth: 1.5,
+    borderColor: Colors.white,
   },
   operand: {
     fontSize: 48,
     fontWeight: "bold",
     lineHeight: 56,
+    color: Colors.white,
   },
 });
