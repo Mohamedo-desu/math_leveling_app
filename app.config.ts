@@ -88,6 +88,16 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           },
         },
       ],
+      [
+        "expo-notifications",
+        {
+          icon: "",
+          color: "#ffffff",
+          defaultChannel: "",
+          sounds: [],
+          enableBackgroundRemoteNotifications: false,
+        },
+      ],
     ],
     experiments: {
       reactCompiler: true,
