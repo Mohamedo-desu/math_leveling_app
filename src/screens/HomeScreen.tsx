@@ -1,6 +1,8 @@
+import CustomText from "@/components/CustomText";
 import QuestionCard from "@/components/HomeScreen/QuestionCard";
 import StreakBadge from "@/components/HomeScreen/StreakBadge";
 import { useTheme } from "@/context/ThemeContext";
+import { useVersion } from "@/hooks/useVersion";
 import React from "react";
 import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
@@ -8,6 +10,8 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 export default function HomeScreen() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
+
+  const { currentVersion } = useVersion();
 
   return (
     <View
@@ -24,6 +28,10 @@ export default function HomeScreen() {
       <StreakBadge />
 
       <QuestionCard />
+
+      <CustomText style={[styles.version, { color: colors.gray[500] }]}>
+        v{currentVersion}
+      </CustomText>
     </View>
   );
 }
@@ -32,5 +40,9 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     gap: 50,
+  },
+  version: {
+    textAlign: "center",
+    fontSize: 12,
   },
 });

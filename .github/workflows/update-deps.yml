@@ -31,7 +31,6 @@ jobs:
         env:
           APP_ENV: preview
           EXPO_PUBLIC_BACKEND_URL: ${{ secrets.EXPO_PUBLIC_BACKEND_URL }}
-          EXPO_PUBLIC_RATES_API_URL: ${{ secrets.EXPO_PUBLIC_RATES_API_URL }}
       - name: Check for changes
         id: git-check
         run: |

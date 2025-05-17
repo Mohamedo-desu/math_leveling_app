@@ -87,10 +87,9 @@ jobs:
       - name: Create OTA Update
         run: eas update --branch ${{ matrix.profile }} --message "Version ${GITHUB_REF#refs/tags/v}" --non-interactive
         env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          MATH_EXPO_TOKEN: ${{ secrets.MATH_EXPO_TOKEN }}
           APP_ENV: ${{ matrix.profile }}
           EXPO_PUBLIC_BACKEND_URL: ${{ secrets.EXPO_PUBLIC_BACKEND_URL }}
-          EXPO_PUBLIC_RATES_API_URL: ${{ secrets.EXPO_PUBLIC_RATES_API_URL }}
 
   build:
     needs: version-check
@@ -122,10 +121,9 @@ jobs:
       - name: Trigger EAS Build
         run: eas build --platform android --profile ${{ matrix.profile }} --non-interactive --no-wait
         env:
-          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+          MATH_EXPO_TOKEN: ${{ secrets.MATH_EXPO_TOKEN }}
           APP_ENV: ${{ matrix.profile }}
           EXPO_PUBLIC_BACKEND_URL: ${{ secrets.EXPO_PUBLIC_BACKEND_URL }}
-          EXPO_PUBLIC_RATES_API_URL: ${{ secrets.EXPO_PUBLIC_RATES_API_URL }}
 
   release:
     needs: [version-check, update, build]
