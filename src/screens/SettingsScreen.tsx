@@ -16,6 +16,7 @@ import {
   View,
   ViewStyle,
 } from "react-native";
+import AnimatedNumbers from "react-native-animated-numbers";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 // Section component with optional icon
@@ -99,12 +100,25 @@ const StatGrid: React.FC<StatGridProps> = ({ items }) => {
           <CustomText style={{ marginBottom: 2, fontSize: 13 }}>
             {item.label}
           </CustomText>
-          <CustomText
-            fontWeight="bold"
-            style={{ fontSize: 18, color: colors.text }}
-          >
-            {item.value}
-          </CustomText>
+
+          <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
+            <AnimatedNumbers
+              includeComma
+              animateToNumber={parseFloat(item.value.toString())}
+              fontStyle={{
+                fontSize: 18,
+                color: colors.text,
+                fontWeight: "bold",
+              }}
+            />
+            {item.label === "Accuracy" && (
+              <CustomText
+                style={{ fontSize: 14, color: colors.text, marginLeft: 2 }}
+              >
+                %
+              </CustomText>
+            )}
+          </View>
         </View>
       ))}
     </View>

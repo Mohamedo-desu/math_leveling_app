@@ -29,7 +29,12 @@ export default function HomeScreen() {
 
       <QuestionCard />
 
-      <CustomText style={[styles.version, { color: colors.gray[500] }]}>
+      <CustomText
+        style={[
+          styles.version,
+          { color: colors.gray[500], bottom: insets.bottom + 10 },
+        ]}
+      >
         v{currentVersion}
       </CustomText>
     </View>
@@ -39,10 +44,12 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    gap: 50,
   },
   version: {
     textAlign: "center",
     fontSize: 12,
+    position: "absolute",
+    left: 0,
+    right: 0,
   },
 });

@@ -20,12 +20,16 @@ const ChoicesGrid = () => {
     <View style={styles.choicesContainer}>
       {choices.map((c) => {
         let backgroundColor = colors.card;
+        let textColor = colors.text;
+
         if (selected !== null) {
           if (c === selected) {
             backgroundColor =
               feedback === "correct" ? Colors.correct : Colors.wrong;
+            textColor = Colors.white;
           } else if (feedback === "wrong" && c === correct) {
             backgroundColor = Colors.correct;
+            textColor = Colors.white;
           }
         }
         // Haptic feedback handler
@@ -49,7 +53,11 @@ const ChoicesGrid = () => {
             disabled={selected !== null}
             activeOpacity={0.8}
           >
-            <CustomText variant="h1" fontWeight="bold">
+            <CustomText
+              variant="h1"
+              fontWeight="bold"
+              style={{ color: textColor }}
+            >
               {c}
             </CustomText>
           </TouchableOpacity>
