@@ -3,6 +3,7 @@ import { Colors } from "@/constants/Colors";
 import { Spacing } from "@/constants/Spacing";
 import { useTheme } from "@/context/ThemeContext";
 import { useAppStore } from "@/store/useAppStore";
+import * as Haptics from "expo-haptics";
 import React, { memo } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 
@@ -27,11 +28,24 @@ const ChoicesGrid = () => {
             backgroundColor = Colors.correct;
           }
         }
+        // Haptic feedback handler
+        const handlePress = async () => {
+          if (c === correct) {
+            await Haptics.notificationAsync(
+              Haptics.NotificationFeedbackType.Success
+            );
+          } else {
+            await Haptics.notificationAsync(
+              Haptics.NotificationFeedbackType.Error
+            );
+          }
+          onSelect(c);
+        };
         return (
           <TouchableOpacity
             key={c}
             style={[styles.choiceButton, { backgroundColor }]}
-            onPress={() => onSelect(c)}
+            onPress={handlePress}
             disabled={selected !== null}
             activeOpacity={0.8}
           >
@@ -60,5 +74,6 @@ const styles = StyleSheet.create({
     borderRadius: Spacing.inputBorderRadius,
     justifyContent: "center",
     alignItems: "center",
+    elevation: 1,
   },
 });

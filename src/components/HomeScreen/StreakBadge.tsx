@@ -16,6 +16,9 @@ const StreakBadge = () => {
 
   const { colors } = useTheme();
 
+  // Determine color based on streakInactive
+  const streakColor = streakInactive ? colors.gray[500] : colors.streak;
+
   useEffect(() => {
     loadStreak();
   }, [loadStreak]);
@@ -36,11 +39,11 @@ const StreakBadge = () => {
         </TouchableOpacity>
       </View>
       <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
-        <Ionicons name="flame" size={50} color={colors.text} />
+        <Ionicons name="flame" size={50} color={streakColor} />
         <AnimatedNumbers
           includeComma
           animateToNumber={streak}
-          fontStyle={[styles.streakText, { color: colors.text }]}
+          fontStyle={[styles.streakText, { color: streakColor }]}
         />
       </View>
       <StatsHeader />

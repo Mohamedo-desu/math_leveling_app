@@ -44,10 +44,10 @@ export const createQuestionSlice = (set: any, get: any): QuestionSlice => ({
       selected: null,
       feedback: null,
     });
-    get().incrementQuestions();
   },
   onSelect: (choice: number) => {
     const { correct, stats, operand1, operand2, operator } = get();
+    get().incrementQuestions();
     const isCorrect = choice === correct;
     set({ selected: choice, feedback: isCorrect ? "correct" : "wrong" });
     if (isCorrect) {
@@ -67,6 +67,6 @@ export const createQuestionSlice = (set: any, get: any): QuestionSlice => ({
         timestamp: Date.now(),
       });
     }
-    setTimeout(get().newQuestion, 300);
+    setTimeout(get().newQuestion, 500);
   },
 });

@@ -1,3 +1,5 @@
+import { mmkvStorage } from "@/store/storage";
+
 export type WrongQuestion = {
   operand1: number;
   operand2: number;
@@ -21,6 +23,7 @@ export type StatsSlice = {
   incrementQuestions: () => void;
   incrementLevel: () => void;
   resetStats: () => void;
+  resetLifetimeStats: () => void;
 };
 
 export const createStatsSlice = (set: any): StatsSlice => ({
@@ -74,4 +77,17 @@ export const createStatsSlice = (set: any): StatsSlice => ({
     set((state: any) => ({
       stats: { ...state.stats, corrected: 0, failed: 0, questions: 0 },
     })),
+  resetLifetimeStats: () => {
+    mmkvStorage.removeItem("stats");
+    mmkvStorage.removeItem("lifetimeStats");
+    set((state: any) => ({
+      stats: { corrected: 0, failed: 0, questions: 0, level: 1 },
+      lifetimeStats: {
+        totalCorrect: 0,
+        totalWrong: 0,
+        totalQuestions: 0,
+        highestLevel: 1,
+      },
+    }));
+  },
 });

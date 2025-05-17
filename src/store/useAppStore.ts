@@ -26,7 +26,6 @@ export const useAppStore = create<AppState>()(
       partialize: (state: AppState) => ({
         streak: state.streak,
         streakInactive: state.streakInactive,
-        stats: state.stats,
         lifetimeStats: state.lifetimeStats,
         wrongQuestions: state.wrongQuestions,
       }),

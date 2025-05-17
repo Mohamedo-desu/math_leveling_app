@@ -4,94 +4,260 @@ import { Spacing } from "@/constants/Spacing";
 import { useTheme } from "@/context/ThemeContext";
 import { useAppStore } from "@/store/useAppStore";
 import { Ionicons } from "@expo/vector-icons";
-import React, { useEffect } from "react";
+import React, { ReactNode, useEffect } from "react";
 import {
+  Alert,
   BackHandler,
+  Platform,
+  ScrollView,
+  StyleProp,
   StyleSheet,
-  Text,
   TouchableOpacity,
   View,
+  ViewStyle,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
-const SettingsScreen = () => {
-  const navigate = useAppStore((s) => s.navigate);
-  const { colors, theme, toggleTheme } = useTheme();
-
-  // Add back button handler
-  useEffect(() => {
-    const backHandler = BackHandler.addEventListener(
-      "hardwareBackPress",
-      () => {
-        navigate("Home");
-        return true; // Prevent default behavior (exit app)
-      }
-    );
-
-    // Cleanup listener on unmount
-    return () => backHandler.remove();
-  }, [navigate]);
-  const { top, bottom } = useSafeAreaInsets();
-
+// Section component with optional icon
+interface SectionProps {
+  title: string;
+  titleColorKey?: "primary" | "secondary";
+  iconName?: React.ComponentProps<typeof Ionicons>["name"];
+  onPressIcon?: () => void;
+  children: ReactNode;
+  style?: StyleProp<ViewStyle>;
+}
+const Section: React.FC<SectionProps> = ({
+  title,
+  titleColorKey = "primary",
+  iconName,
+  onPressIcon,
+  children,
+  style,
+}) => {
+  const { colors } = useTheme();
   return (
-    <View style={[styles.container, { backgroundColor: colors.background }]}>
-      <View style={[styles.header, { paddingTop: top + 10 }]}>
-        <View style={styles.headerLeft}>
+    <View
+      style={[
+        {
+          padding: Spacing.cardPadding,
+          backgroundColor: colors.card,
+          borderRadius: Spacing.inputBorderRadius,
+        },
+        style,
+      ]}
+    >
+      <View style={styles.sectionHeader}>
+        <CustomText
+          style={{
+            fontWeight: "700",
+            color: colors[titleColorKey],
+            fontSize: 16,
+          }}
+        >
+          {title}
+        </CustomText>
+        {iconName && (
           <TouchableOpacity
-            onPress={() => navigate("Home")}
-            activeOpacity={0.8}
-            hitSlop={10}
+            onPress={onPressIcon}
+            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
           >
-            <Ionicons
-              name="arrow-back"
-              size={Spacing.iconSize}
-              color={Colors.primary}
-            />
+            <Ionicons name={iconName} size={20} color={colors[titleColorKey]} />
           </TouchableOpacity>
-        </View>
-        <View style={styles.headerCenter}>
-          <CustomText variant="h4" fontWeight="bold">
-            Settings
+        )}
+      </View>
+      {children}
+    </View>
+  );
+};
+
+// StatGrid component
+interface StatItem {
+  icon: React.ComponentProps<typeof Ionicons>["name"];
+  value: string | number;
+  label: string;
+  iconColor?: string;
+}
+interface StatGridProps {
+  items: StatItem[];
+}
+const StatGrid: React.FC<StatGridProps> = ({ items }) => {
+  const { colors } = useTheme();
+  return (
+    <View style={[styles.statGrid, { backgroundColor: colors.gray[100] }]}>
+      {items.map((item, idx) => (
+        <View
+          key={idx}
+          style={[styles.grid, { backgroundColor: colors.gray[200] }]}
+        >
+          <Ionicons
+            name={item.icon}
+            size={28}
+            color={colors.primary}
+            style={{ marginBottom: 6 }}
+          />
+          <CustomText style={{ marginBottom: 2, fontSize: 13 }}>
+            {item.label}
+          </CustomText>
+          <CustomText
+            fontWeight="bold"
+            style={{ fontSize: 18, color: colors.text }}
+          >
+            {item.value}
           </CustomText>
         </View>
-        <View style={styles.headerRight}></View>
-      </View>
+      ))}
+    </View>
+  );
+};
 
-      {/* Theme Options */}
-      <View style={[styles.section, { backgroundColor: colors.card }]}>
-        <Text style={[styles.sectionTitle, { color: colors.secondary }]}>
-          Theme Options
-        </Text>
-        <Text style={[styles.placeholder, { color: colors.gray[500] }]}>
-          Current theme: {theme}
-        </Text>
-        <Text
-          style={[styles.themeToggle, { color: colors.primary }]}
-          onPress={toggleTheme}
+// Main SettingsScreen
+const SettingsScreen: React.FC = () => {
+  const navigate = useAppStore((s) => s.navigate);
+  const { colors, theme, toggleTheme } = useTheme();
+  const { top, bottom } = useSafeAreaInsets();
+  const lifetimeStats = useAppStore((s) => s.lifetimeStats);
+  const resetLifetimeStats = useAppStore((s) => s.resetLifetimeStats);
+
+  useEffect(() => {
+    const back = BackHandler.addEventListener("hardwareBackPress", () => {
+      navigate("Home");
+      return true;
+    });
+    return () => back.remove();
+  }, [navigate]);
+
+  // show confirm alert before resetting stats
+  const confirmReset = () => {
+    if (Platform.OS === "web") {
+      if (window.confirm("Reset all statistics?")) resetLifetimeStats();
+    } else {
+      Alert.alert(
+        "Reset Stats",
+        "Are you sure you want to reset all statistics?",
+        [
+          { text: "Cancel", style: "cancel" },
+          { text: "Reset", style: "destructive", onPress: resetLifetimeStats },
+        ]
+      );
+    }
+  };
+
+  const analyticsItems: StatItem[] = [
+    {
+      icon: "help-circle",
+      label: "Questions",
+      value: lifetimeStats.totalQuestions,
+    },
+    {
+      icon: "checkmark-circle",
+      label: "Correct",
+      value: lifetimeStats.totalCorrect,
+      iconColor: Colors.correct,
+    },
+    {
+      icon: "close-circle",
+      label: "Wrong",
+      value: lifetimeStats.totalWrong,
+      iconColor: Colors.wrong,
+    },
+    {
+      icon: "trophy",
+      label: "Highest Level",
+      value: lifetimeStats.highestLevel,
+    },
+    {
+      icon: "stats-chart",
+      label: "Accuracy",
+      value: lifetimeStats.totalQuestions
+        ? (
+            (lifetimeStats.totalCorrect / lifetimeStats.totalQuestions) *
+            100
+          ).toFixed(1) + "%"
+        : "0%",
+    },
+    {
+      icon: "school",
+      label: "IQ Level",
+      value: lifetimeStats.totalQuestions
+        ? Math.round(
+            (lifetimeStats.totalCorrect / lifetimeStats.totalQuestions) * 100 +
+              lifetimeStats.highestLevel
+          )
+        : lifetimeStats.highestLevel,
+    },
+  ];
+
+  const tips = [
+    "Break big numbers into smaller parts.",
+    "Use rounding to estimate answers quickly.",
+    "Practice mental addition and subtraction daily.",
+    "Memorize multiplication tables for speed.",
+    "Visualize problems to simplify calculations.",
+  ];
+
+  return (
+    <View
+      style={[
+        styles.container,
+        { backgroundColor: colors.background, paddingTop: top + 10 },
+      ]}
+    >
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => navigate("Home")}
+          style={styles.headerButton}
         >
-          Toggle Theme
-        </Text>
+          <Ionicons
+            name="arrow-back"
+            size={Spacing.iconSize}
+            color={colors.primary}
+          />
+        </TouchableOpacity>
+        <CustomText variant="h4" fontWeight="bold">
+          Settings
+        </CustomText>
+        <View style={styles.headerRight} />
       </View>
 
-      {/* Analytics Options */}
-      <View style={[styles.section, { backgroundColor: colors.card }]}>
-        <Text style={[styles.sectionTitle, { color: colors.secondary }]}>
-          Analytics Options
-        </Text>
-        <Text style={[styles.placeholder, { color: colors.gray[500] }]}>
-          Analytics controls coming soon...
-        </Text>
-      </View>
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: bottom + 32, gap: Spacing.md }}
+        showsVerticalScrollIndicator={false}
+      >
+        <Section title="Theme Options">
+          <CustomText>Current theme: {theme}</CustomText>
+          <TouchableOpacity
+            onPress={toggleTheme}
+            style={{ marginTop: Spacing.sm }}
+          >
+            <CustomText style={{ textDecorationLine: "underline" }}>
+              Toggle Theme
+            </CustomText>
+          </TouchableOpacity>
+        </Section>
 
-      {/* Tips & Tricks Options */}
-      <View style={[styles.section, { backgroundColor: colors.card }]}>
-        <Text style={[styles.sectionTitle, { color: colors.secondary }]}>
-          Tips & Tricks
-        </Text>
-        <Text style={[styles.placeholder, { color: colors.gray[500] }]}>
-          Tips and tricks coming soon...
-        </Text>
-      </View>
+        <Section
+          title="Lifetime Stats"
+          titleColorKey="primary"
+          iconName="refresh"
+          onPressIcon={confirmReset}
+          style={{ marginTop: Spacing.md }}
+        >
+          <StatGrid items={analyticsItems} />
+        </Section>
+
+        <Section
+          title="Tips & Tricks"
+          titleColorKey="secondary"
+          style={{ marginTop: Spacing.md }}
+        >
+          {tips.map((t, i) => (
+            <CustomText key={i} style={{ marginBottom: Spacing.xs }}>
+              • {t}
+            </CustomText>
+          ))}
+        </Section>
+      </ScrollView>
     </View>
   );
 };
@@ -99,52 +265,33 @@ const SettingsScreen = () => {
 export default SettingsScreen;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    paddingHorizontal: Spacing.screenPadding,
-  },
+  container: { flex: 1, paddingHorizontal: Spacing.screenPadding },
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 16,
+    marginBottom: Spacing.md,
   },
-  headerLeft: {
-    flex: 1,
-  },
-
-  headerCenter: {
-    flex: 1,
+  headerButton: { flex: 1 },
+  headerRight: { flex: 1 },
+  sectionHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
     alignItems: "center",
+    marginBottom: Spacing.sm,
   },
-  headerRight: {
-    flex: 1,
-    alignItems: "flex-end",
+  statGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "space-between",
+    gap: Spacing.xs,
+    marginVertical: Spacing.sm,
   },
-
-  section: {
-    marginBottom: 32,
-    padding: 16,
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.05,
-    shadowRadius: 8,
-    shadowOffset: { width: 0, height: 2 },
-    elevation: 2,
-  },
-  sectionTitle: {
-    fontSize: 20,
-    fontWeight: "600",
-    marginBottom: 8,
-  },
-  placeholder: {
-    fontSize: 16,
-  },
-  themeToggle: {
-    marginTop: 12,
-    fontSize: 16,
-    fontWeight: "bold",
-    textDecorationLine: "underline",
-    alignSelf: "flex-start",
+  grid: {
+    width: "48%",
+    marginBottom: Spacing.sm,
+    borderRadius: Spacing.inputBorderRadius,
+    paddingVertical: Spacing.md,
+    alignItems: "center",
   },
 });
