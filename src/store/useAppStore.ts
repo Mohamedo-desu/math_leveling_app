@@ -6,11 +6,21 @@ import { createQuestionSlice, QuestionSlice } from "@/store/questionSlice";
 import { createStatsSlice, StatsSlice } from "@/store/statsSlice";
 import { mmkvStorage } from "@/store/storage";
 import { createStreakSlice, StreakSlice } from "@/store/streakSlice";
+import { Dimensions } from "react-native";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 // ----- Combine Store -----
-type AppState = StatsSlice & StreakSlice & QuestionSlice & NavigationSlice;
+type OrientationType = "portrait" | "landscape";
+type OrientationSlice = {
+  orientation: OrientationType;
+  setOrientation: (o: OrientationType) => void;
+};
+type AppState = StatsSlice &
+  StreakSlice &
+  QuestionSlice &
+  NavigationSlice &
+  OrientationSlice;
 
 export const useAppStore = create<AppState>()(
   persist(
@@ -19,6 +29,11 @@ export const useAppStore = create<AppState>()(
       ...createStreakSlice(set, get),
       ...createQuestionSlice(set, get),
       ...createNavigationSlice(set),
+      orientation:
+        Dimensions.get("window").width > Dimensions.get("window").height
+          ? "landscape"
+          : "portrait",
+      setOrientation: (o) => set({ orientation: o }),
     }),
     {
       name: "app-storage",
@@ -32,3 +47,9 @@ export const useAppStore = create<AppState>()(
     }
   )
 );
+
+// Listen for orientation changes globally and update the store
+Dimensions.addEventListener("change", ({ window }) => {
+  const o = window.width > window.height ? "landscape" : "portrait";
+  useAppStore.getState().setOrientation(o);
+});

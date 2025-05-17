@@ -16,8 +16,10 @@ const ChoicesGrid = () => {
 
   const { colors } = useTheme();
 
+  const orientation = useAppStore((s) => s.orientation);
+
   return (
-    <View style={styles.choicesContainer}>
+    <View style={[styles.choicesContainer]}>
       {choices.map((c) => {
         let backgroundColor = colors.card;
         let textColor = colors.text;
@@ -48,7 +50,15 @@ const ChoicesGrid = () => {
         return (
           <TouchableOpacity
             key={c}
-            style={[styles.choiceButton, { backgroundColor }]}
+            style={[
+              styles.choiceButton,
+              {
+                backgroundColor,
+                width: orientation === "portrait" ? "100%" : "49%",
+                height: orientation === "portrait" ? "18%" : "35%",
+                borderColor: colors.gray[200],
+              },
+            ]}
             onPress={handlePress}
             disabled={selected !== null}
             activeOpacity={0.8}
@@ -71,17 +81,17 @@ export default memo(ChoicesGrid);
 
 const styles = StyleSheet.create({
   choicesContainer: {
+    gap: 10,
     flexDirection: "row",
     flexWrap: "wrap",
     justifyContent: "center",
-    gap: 10,
+    width: "90%",
   },
   choiceButton: {
-    width: "90%",
-    height: Spacing.inputHeight,
     borderRadius: Spacing.inputBorderRadius,
     justifyContent: "center",
     alignItems: "center",
     elevation: 1,
+    borderWidth: 2,
   },
 });

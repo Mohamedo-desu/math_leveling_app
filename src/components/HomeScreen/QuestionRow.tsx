@@ -9,11 +9,46 @@ const QuestionRow = () => {
   const operand1 = useAppStore((s) => s.operand1);
   const operand2 = useAppStore((s) => s.operand2);
   const operator = useAppStore((s) => s.operator);
+
+  const orientation = useAppStore((s) => s.orientation);
+
   return (
-    <View style={styles.questionRow}>
-      <CustomText style={styles.operand}>{operand1}</CustomText>
-      <CustomText style={styles.operand}>{operator}</CustomText>
-      <CustomText style={styles.operand}>{operand2}</CustomText>
+    <View
+      style={[
+        styles.questionRow,
+        orientation === "portrait" ? styles.rowPortrait : styles.rowLandscape,
+      ]}
+    >
+      <CustomText
+        style={[
+          styles.operand,
+          orientation === "portrait"
+            ? styles.operandPortrait
+            : styles.operandLandscape,
+        ]}
+      >
+        {operand1}
+      </CustomText>
+      <CustomText
+        style={[
+          styles.operand,
+          orientation === "portrait"
+            ? styles.operandPortrait
+            : styles.operandLandscape,
+        ]}
+      >
+        {operator}
+      </CustomText>
+      <CustomText
+        style={[
+          styles.operand,
+          orientation === "portrait"
+            ? styles.operandPortrait
+            : styles.operandLandscape,
+        ]}
+      >
+        {operand2}
+      </CustomText>
     </View>
   );
 };
@@ -28,17 +63,29 @@ const styles = StyleSheet.create({
     gap: 10,
     backgroundColor: Colors.primary,
     width: "90%",
-    height: 100,
     alignSelf: "center",
     borderRadius: Spacing.inputBorderRadius,
     borderWidth: 1.5,
     borderColor: Colors.white,
     elevation: 5,
   },
+  rowPortrait: {
+    height: 100,
+    marginBottom: 10,
+  },
+  rowLandscape: {
+    height: 70,
+    marginBottom: 5,
+  },
   operand: {
-    fontSize: 48,
     fontWeight: "bold",
     lineHeight: 56,
     color: Colors.white,
+  },
+  operandPortrait: {
+    fontSize: 48,
+  },
+  operandLandscape: {
+    fontSize: 30,
   },
 });

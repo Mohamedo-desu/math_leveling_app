@@ -28,6 +28,7 @@
     "expo-haptics": "~14.1.4",
     "expo-linear-gradient": "~14.1.4",
     "expo-notifications": "~0.31.2",
+    "expo-screen-orientation": "~8.1.6",
     "expo-splash-screen": "~0.30.8",
     "expo-updates": "~0.28.13",
     "react": "19.0.0",

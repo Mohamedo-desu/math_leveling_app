@@ -6,6 +6,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import React, { memo, useEffect } from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import AnimatedNumbers from "react-native-animated-numbers";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import StatsHeader from "../StatsHeader";
 
 const StreakBadge = () => {
@@ -13,6 +14,10 @@ const StreakBadge = () => {
   const streakInactive = useAppStore((s) => s.streakInactive);
   const loadStreak = useAppStore((s) => s.loadStreak);
   const navigate = useAppStore((s) => s.navigate);
+
+  const { top } = useSafeAreaInsets();
+
+  const orientation = useAppStore((s) => s.orientation);
 
   const { colors } = useTheme();
 
@@ -28,31 +33,53 @@ const StreakBadge = () => {
       colors={[Colors.primary, "transparent"]}
       start={{ x: 0.5, y: 0.1 }}
       end={{ x: 0.5, y: 1 }}
-      style={styles.streakContainer}
+      style={[
+        styles.streakContainer,
+        orientation === "portrait"
+          ? styles.streakPortrait
+          : styles.streakLandscape,
+      ]}
     >
-      <View style={styles.settingsContainer}>
-        <TouchableOpacity
-          style={styles.settingsButton}
-          onPress={() => navigate("Settings")}
+      <View style={[styles.streakInner, { marginTop: top + 10 }]}>
+        <View style={styles.settingsContainer}>
+          <TouchableOpacity
+            style={styles.settingsButton}
+            onPress={() => navigate("Settings")}
+          >
+            <Ionicons
+              name="settings"
+              size={orientation === "portrait" ? 25 : 20}
+              color={colors.white}
+            />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={[
+            styles.flameRow,
+            orientation === "portrait"
+              ? styles.flamePortrait
+              : styles.flameLandscape,
+          ]}
         >
-          <Ionicons name="settings" size={25} color={colors.white} />
-        </TouchableOpacity>
+          <Ionicons
+            name="flame"
+            size={orientation === "portrait" ? 50 : 20}
+            color={colors.streak}
+          />
+          <AnimatedNumbers
+            includeComma
+            animateToNumber={streak}
+            fontStyle={[
+              styles.streakText,
+              {
+                color: streakColor,
+                fontSize: orientation === "portrait" ? 50 : 20,
+              },
+            ]}
+          />
+        </View>
+        <StatsHeader />
       </View>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          gap: 8,
-        }}
-      >
-        <Ionicons name="flame" size={50} color={streakColor} />
-        <AnimatedNumbers
-          includeComma
-          animateToNumber={streak}
-          fontStyle={[styles.streakText, { color: streakColor }]}
-        />
-      </View>
-      <StatsHeader />
     </LinearGradient>
   );
 };
@@ -61,20 +88,48 @@ export default memo(StreakBadge);
 
 const styles = StyleSheet.create({
   streakContainer: {
+    width: "100%",
     alignItems: "center",
+  },
+  streakPortrait: {
+    height: "40%",
+    gap: "10%",
+  },
+  streakLandscape: {
+    height: "40%",
+    gap: 0,
+  },
+  streakInner: {
+    height: "100%",
     justifyContent: "center",
     gap: "10%",
-    width: "100%",
-    height: "35%",
+  },
+  settingsButton: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  settingsContainer: {
+    position: "absolute",
+    right: 0,
+    top: 0,
+    margin: 2,
+  },
+  flameRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "center",
+  },
+  flamePortrait: {
+    position: "relative",
+    top: 0,
+    left: 0,
+  },
+  flameLandscape: {
+    position: "absolute",
+    top: 0,
+    left: 0,
   },
   streakText: {
     fontWeight: "bold",
-    fontSize: 50,
-    lineHeight: 56,
-  },
-  settingsButton: {},
-  settingsContainer: {
-    width: "90%",
-    alignItems: "flex-end",
   },
 });

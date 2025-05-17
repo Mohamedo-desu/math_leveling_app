@@ -98,6 +98,12 @@ export default ({ config }: ConfigContext): ExpoConfig => {
           enableBackgroundRemoteNotifications: false,
         },
       ],
+      [
+        "expo-screen-orientation",
+        {
+          initialOrientation: "DEFAULT",
+        },
+      ],
     ],
     experiments: {
       reactCompiler: true,
