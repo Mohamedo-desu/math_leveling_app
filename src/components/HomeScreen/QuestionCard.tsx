@@ -23,6 +23,6 @@ export default memo(QuestionCard);
 
 const styles = StyleSheet.create({
   container: {
-    gap: 50,
+    gap: "10%",
   },
 });

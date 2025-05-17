@@ -35,10 +35,16 @@ const StreakBadge = () => {
           style={styles.settingsButton}
           onPress={() => navigate("Settings")}
         >
-          <Ionicons name="settings" size={25} color={colors.text} />
+          <Ionicons name="settings" size={25} color={colors.white} />
         </TouchableOpacity>
       </View>
-      <View style={{ flexDirection: "row", alignItems: "center", gap: 8 }}>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 8,
+        }}
+      >
         <Ionicons name="flame" size={50} color={streakColor} />
         <AnimatedNumbers
           includeComma
@@ -57,9 +63,9 @@ const styles = StyleSheet.create({
   streakContainer: {
     alignItems: "center",
     justifyContent: "center",
-    gap: 30,
+    gap: "10%",
     width: "100%",
-    height: 300,
+    height: "35%",
   },
   streakText: {
     fontWeight: "bold",

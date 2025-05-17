@@ -10,7 +10,7 @@
     "build:web": "npx expo export --platform web",
     "release:web": "eas deploy --prod",
     "upgrade": "bun install expo@latest && bunx expo install --fix",
-    "android": "bunx expo run:android --device",
+    "android": "bunx expo run:android --device --variant debug",
     "release:android": "bunx expo run:android --device --variant Release",
     "release:ios": "bunx expo run:ios --configuration Release",
     "test": "jest --watchAll",
