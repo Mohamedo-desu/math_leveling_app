@@ -132,6 +132,8 @@ const SettingsScreen: React.FC = () => {
   const { top, bottom } = useSafeAreaInsets();
   const lifetimeStats = useAppStore((s) => s.lifetimeStats);
   const resetLifetimeStats = useAppStore((s) => s.resetLifetimeStats);
+  const setOperator = useAppStore((s) => s.setOperator);
+  const operator = useAppStore((s) => s.operator);
 
   useEffect(() => {
     const back = BackHandler.addEventListener("hardwareBackPress", () => {
@@ -165,13 +167,13 @@ const SettingsScreen: React.FC = () => {
     },
     {
       icon: "checkmark-circle",
-      label: "Correct",
+      label: "Passed",
       value: lifetimeStats.totalCorrect,
       iconColor: Colors.correct,
     },
     {
       icon: "close-circle",
-      label: "Wrong",
+      label: "Failed",
       value: lifetimeStats.totalWrong,
       iconColor: Colors.wrong,
     },
@@ -200,14 +202,36 @@ const SettingsScreen: React.FC = () => {
           )
         : lifetimeStats.highestLevel,
     },
+    {
+      icon: "calculator",
+      label: "Probability (Right)",
+      value: lifetimeStats.totalQuestions
+        ? (lifetimeStats.totalCorrect / lifetimeStats.totalQuestions).toFixed(3)
+        : "0.000",
+    },
+    {
+      icon: "trending-up",
+      label: "Most Consecutive Right",
+      value: lifetimeStats.mostConsecutiveCorrect || 0,
+    },
+    {
+      icon: "trending-down",
+      label: "Most Consecutive Wrong",
+      value: lifetimeStats.mostConsecutiveWrong || 0,
+    },
   ];
 
   const tips = [
-    "Break big numbers into smaller parts.",
-    "Use rounding to estimate answers quickly.",
-    "Practice mental addition and subtraction daily.",
-    "Memorize multiplication tables for speed.",
-    "Visualize problems to simplify calculations.",
+    "Break complex problems into smaller, manageable steps.",
+    "Double-check your answer by reversing the operation.",
+    "Use number bonds and pairs to simplify calculations.",
+    "Estimate first, then adjust for accuracy.",
+    "Practice mental math daily to build speed and confidence.",
+    "Visualize numbers on a number line for addition and subtraction.",
+    "Memorize key math facts like squares and multiplication tables.",
+    "Look for patterns and shortcuts in problems.",
+    "Stay calm and take your time—accuracy is more important than speed.",
+    "Challenge yourself with new types of problems regularly.",
   ];
 
   return (
@@ -248,6 +272,34 @@ const SettingsScreen: React.FC = () => {
               Toggle Theme
             </CustomText>
           </TouchableOpacity>
+        </Section>
+
+        <Section title="Practice Operation" style={{ marginTop: Spacing.md }}>
+          <View style={{ flexDirection: "row", gap: 16 }}>
+            {["+", "-"].map((op) => (
+              <TouchableOpacity
+                key={op}
+                onPress={() => setOperator(op as any)}
+                style={{
+                  paddingVertical: 10,
+                  paddingHorizontal: 24,
+                  borderRadius: 8,
+                  backgroundColor:
+                    operator === op ? colors.primary : colors.gray[200],
+                  marginRight: 8,
+                }}
+              >
+                <CustomText
+                  style={{
+                    color: operator === op ? "#fff" : colors.text,
+                    fontWeight: "bold",
+                  }}
+                >
+                  {op === "+" ? "Addition (+)" : "Subtraction (-)"}
+                </CustomText>
+              </TouchableOpacity>
+            ))}
+          </View>
         </Section>
 
         <Section

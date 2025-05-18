@@ -23,8 +23,6 @@ export default function HomeScreen() {
         styles.screen,
         {
           paddingBottom: insets.bottom,
-          paddingLeft: insets.left,
-          paddingRight: insets.right,
           backgroundColor: colors.background,
         },
       ]}

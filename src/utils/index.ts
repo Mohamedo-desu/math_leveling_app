@@ -31,3 +31,7 @@ export function generateChoices(
 export function getRandomInt(max: number): number {
   return Math.floor(Math.random() * (max + 1));
 }
+
+export function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}

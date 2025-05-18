@@ -16,8 +16,12 @@ export type StatsSlice = {
     totalWrong: number;
     totalQuestions: number;
     highestLevel: number;
+    mostConsecutiveCorrect: number;
+    mostConsecutiveWrong: number;
   };
   wrongQuestions: WrongQuestion[];
+  currentConsecutiveCorrect: number;
+  currentConsecutiveWrong: number;
   incrementCorrect: () => void;
   incrementWrong: (wrongQuestion?: WrongQuestion) => void;
   incrementQuestions: () => void;
@@ -33,27 +37,51 @@ export const createStatsSlice = (set: any): StatsSlice => ({
     totalWrong: 0,
     totalQuestions: 0,
     highestLevel: 1,
+    mostConsecutiveCorrect: 0,
+    mostConsecutiveWrong: 0,
   },
   wrongQuestions: [],
+  currentConsecutiveCorrect: 0,
+  currentConsecutiveWrong: 0,
   incrementCorrect: () =>
-    set((state: any) => ({
-      stats: { ...state.stats, corrected: state.stats.corrected + 1 },
-      lifetimeStats: {
-        ...state.lifetimeStats,
-        totalCorrect: state.lifetimeStats.totalCorrect + 1,
-      },
-    })),
+    set((state: any) => {
+      const newCurrentCorrect = (state.currentConsecutiveCorrect || 0) + 1;
+      const newMostCorrect = Math.max(
+        state.lifetimeStats.mostConsecutiveCorrect || 0,
+        newCurrentCorrect
+      );
+      return {
+        stats: { ...state.stats, corrected: state.stats.corrected + 1 },
+        lifetimeStats: {
+          ...state.lifetimeStats,
+          totalCorrect: state.lifetimeStats.totalCorrect + 1,
+          mostConsecutiveCorrect: newMostCorrect,
+        },
+        currentConsecutiveCorrect: newCurrentCorrect,
+        currentConsecutiveWrong: 0,
+      };
+    }),
   incrementWrong: (wrongQuestion?: WrongQuestion) =>
-    set((state: any) => ({
-      stats: { ...state.stats, failed: state.stats.failed + 1 },
-      lifetimeStats: {
-        ...state.lifetimeStats,
-        totalWrong: state.lifetimeStats.totalWrong + 1,
-      },
-      wrongQuestions: wrongQuestion
-        ? [...state.wrongQuestions, wrongQuestion]
-        : state.wrongQuestions,
-    })),
+    set((state: any) => {
+      const newCurrentWrong = (state.currentConsecutiveWrong || 0) + 1;
+      const newMostWrong = Math.max(
+        state.lifetimeStats.mostConsecutiveWrong || 0,
+        newCurrentWrong
+      );
+      return {
+        stats: { ...state.stats, failed: state.stats.failed + 1 },
+        lifetimeStats: {
+          ...state.lifetimeStats,
+          totalWrong: state.lifetimeStats.totalWrong + 1,
+          mostConsecutiveWrong: newMostWrong,
+        },
+        wrongQuestions: wrongQuestion
+          ? [...state.wrongQuestions, wrongQuestion]
+          : state.wrongQuestions,
+        currentConsecutiveCorrect: 0,
+        currentConsecutiveWrong: newCurrentWrong,
+      };
+    }),
   incrementQuestions: () =>
     set((state: any) => ({
       stats: { ...state.stats, questions: state.stats.questions + 1 },
@@ -87,7 +115,11 @@ export const createStatsSlice = (set: any): StatsSlice => ({
         totalWrong: 0,
         totalQuestions: 0,
         highestLevel: 1,
+        mostConsecutiveCorrect: 0,
+        mostConsecutiveWrong: 0,
       },
+      currentConsecutiveCorrect: 0,
+      currentConsecutiveWrong: 0,
     }));
   },
 });

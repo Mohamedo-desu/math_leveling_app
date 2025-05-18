@@ -17,6 +17,7 @@ export type QuestionSlice = {
   feedback: Feedback;
   newQuestion: () => void;
   onSelect: (choice: number) => void;
+  setOperator: (op: "+" | "-") => void;
 };
 
 export const createQuestionSlice = (set: any, get: any): QuestionSlice => ({
@@ -31,7 +32,7 @@ export const createQuestionSlice = (set: any, get: any): QuestionSlice => ({
     const { level } = get().stats;
     const scaledMax = INITIAL_OPERAND_MAX * level;
     const operandMax = Math.min(scaledMax, MAX_OPERAND_MAX);
-    const op = OPERATORS[getRandomInt(OPERATORS.length - 1)] as "+" | "-";
+    const op = get().operator || OPERATORS[getRandomInt(OPERATORS.length - 1)];
     const a = getRandomInt(operandMax);
     const b = getRandomInt(operandMax);
     const answer = op === "+" ? a + b : a - b;
@@ -69,4 +70,5 @@ export const createQuestionSlice = (set: any, get: any): QuestionSlice => ({
     }
     setTimeout(get().newQuestion, 500);
   },
+  setOperator: (op: "+" | "-") => set({ operator: op }),
 });

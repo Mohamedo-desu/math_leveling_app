@@ -17,6 +17,7 @@ import { SystemBars } from "react-native-edge-to-edge";
 type ThemeMode = "light" | "dark" | "system";
 
 interface CustomThemeColors {
+  isDark: boolean;
   primary: string;
   secondary: string;
   white: string;
@@ -71,6 +72,7 @@ export const ThemeContext = createContext<ThemeContextType>({
 
 // Theme definitions
 const customDarkTheme: CustomThemeColors = {
+  isDark: true,
   background: Colors.black,
   card: Colors.darkGray[100],
   text: Colors.white,
@@ -88,6 +90,7 @@ const customDarkTheme: CustomThemeColors = {
 };
 
 const customLightTheme: CustomThemeColors = {
+  isDark: false,
   background: Colors.white,
   card: Colors.lightGray[100],
   text: Colors.black,

@@ -57,14 +57,21 @@ const StreakBadge = () => {
           style={[
             styles.flameRow,
             orientation === "portrait"
-              ? styles.flamePortrait
+              ? [
+                  styles.flamePortrait,
+                  {
+                    backgroundColor: colors.isDark
+                      ? "rgba(0,0,0,.1)"
+                      : "rgba(255,255,255,.3)",
+                  },
+                ]
               : styles.flameLandscape,
           ]}
         >
           <Ionicons
             name="flame"
             size={orientation === "portrait" ? 50 : 20}
-            color={colors.streak}
+            color={streakColor}
           />
           <AnimatedNumbers
             includeComma
@@ -117,12 +124,17 @@ const styles = StyleSheet.create({
   flameRow: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "center",
     alignSelf: "center",
   },
   flamePortrait: {
     position: "relative",
     top: 0,
     left: 0,
+
+    borderRadius: 50,
+    height: 100,
+    aspectRatio: 1,
   },
   flameLandscape: {
     position: "absolute",
