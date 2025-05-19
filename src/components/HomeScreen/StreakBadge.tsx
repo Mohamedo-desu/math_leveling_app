@@ -22,7 +22,8 @@ const StreakBadge = () => {
   const { colors } = useTheme();
 
   // Determine color based on streakInactive
-  const streakColor = streakInactive ? colors.gray[500] : colors.streak;
+  const streakColor =
+    streakInactive || streak === 0 ? colors.gray[500] : colors.streak;
 
   useEffect(() => {
     loadStreak();

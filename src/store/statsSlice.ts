@@ -28,6 +28,8 @@ export type StatsSlice = {
   incrementLevel: () => void;
   resetStats: () => void;
   resetLifetimeStats: () => void;
+  strictMode: boolean;
+  toggleStrictMode: () => void;
 };
 
 export const createStatsSlice = (set: any): StatsSlice => ({
@@ -43,6 +45,11 @@ export const createStatsSlice = (set: any): StatsSlice => ({
   wrongQuestions: [],
   currentConsecutiveCorrect: 0,
   currentConsecutiveWrong: 0,
+  strictMode: false,
+  toggleStrictMode: () =>
+    set((state: any) => ({
+      strictMode: !state.strictMode,
+    })),
   incrementCorrect: () =>
     set((state: any) => {
       const newCurrentCorrect = (state.currentConsecutiveCorrect || 0) + 1;

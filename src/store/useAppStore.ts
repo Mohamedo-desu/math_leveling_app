@@ -43,6 +43,7 @@ export const useAppStore = create<AppState>()(
         streakInactive: state.streakInactive,
         lifetimeStats: state.lifetimeStats,
         wrongQuestions: state.wrongQuestions,
+        strictMode: state.strictMode,
       }),
     }
   )

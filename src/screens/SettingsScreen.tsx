@@ -12,6 +12,7 @@ import {
   ScrollView,
   StyleProp,
   StyleSheet,
+  Switch,
   TouchableOpacity,
   View,
   ViewStyle,
@@ -102,15 +103,26 @@ const StatGrid: React.FC<StatGridProps> = ({ items }) => {
           </CustomText>
 
           <View style={{ flexDirection: "row", alignItems: "flex-end" }}>
-            <AnimatedNumbers
-              includeComma
-              animateToNumber={parseFloat(item.value.toString())}
-              fontStyle={{
-                fontSize: 18,
-                color: colors.text,
-                fontWeight: "bold",
-              }}
-            />
+            {item.label === "Probability (Right)" ? (
+              // Render static text for Probability
+              <CustomText
+                style={{ fontSize: 18, color: colors.text, fontWeight: "bold" }}
+              >
+                {item.value}
+              </CustomText>
+            ) : (
+              // Animate all other stats
+              <AnimatedNumbers
+                includeComma
+                animateToNumber={parseFloat(item.value.toString())}
+                fontStyle={{
+                  fontSize: 18,
+                  color: colors.text,
+                  fontWeight: "bold",
+                }}
+              />
+            )}
+
             {item.label === "Accuracy" && (
               <CustomText
                 style={{ fontSize: 14, color: colors.text, marginLeft: 2 }}
@@ -134,6 +146,9 @@ const SettingsScreen: React.FC = () => {
   const resetLifetimeStats = useAppStore((s) => s.resetLifetimeStats);
   const setOperator = useAppStore((s) => s.setOperator);
   const operator = useAppStore((s) => s.operator);
+
+  const strictMode = useAppStore((s) => s.strictMode);
+  const toggleStrictMode = useAppStore((s) => s.toggleStrictMode);
 
   useEffect(() => {
     const back = BackHandler.addEventListener("hardwareBackPress", () => {
@@ -211,15 +226,19 @@ const SettingsScreen: React.FC = () => {
     },
     {
       icon: "trending-up",
-      label: "Most Consecutive Right",
+      label: "Consecutive Rights",
       value: lifetimeStats.mostConsecutiveCorrect || 0,
     },
     {
       icon: "trending-down",
-      label: "Most Consecutive Wrong",
+      label: "Consecutive Wrongs",
       value: lifetimeStats.mostConsecutiveWrong || 0,
     },
   ];
+
+  console.log(
+    (lifetimeStats.totalCorrect / lifetimeStats.totalQuestions).toFixed(3)
+  );
 
   const tips = [
     "Break complex problems into smaller, manageable steps.",
@@ -272,6 +291,29 @@ const SettingsScreen: React.FC = () => {
               Toggle Theme
             </CustomText>
           </TouchableOpacity>
+        </Section>
+
+        <Section title="Strict Mode" style={{ marginBottom: Spacing.md }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <CustomText style={{ color: colors.text, fontSize: 13 }}>
+                If enabled: any 3 failed questions will restart the game and
+                game speed is much faster.
+              </CustomText>
+            </View>
+            <Switch
+              value={strictMode}
+              onValueChange={toggleStrictMode}
+              thumbColor={strictMode ? colors.primary : colors.gray[400]}
+              trackColor={{ false: colors.gray[200], true: colors.primary }}
+            />
+          </View>
         </Section>
 
         <Section title="Practice Operation" style={{ marginTop: Spacing.md }}>
