@@ -69,7 +69,7 @@ export const useVersion = () => {
               return await Updates.reloadAsync();
             }
           } catch (error) {
-            console.error("[DEBUG] OTA check error:", error);
+            console.log("[DEBUG] OTA check error:", error);
           }
         }
 

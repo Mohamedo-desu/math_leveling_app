@@ -10,98 +10,104 @@ import {
 export type QuestionSlice = {
   operand1: number;
   operand2: number;
-  operator: "+" | "-";
+  /** user preference: "+", "-" or "mix" */
+  operator: "+" | "-" | "mix";
+  /** actual operator used for current question: "+" or "-" */
+  questionOperator: "+" | "-";
   correct: number;
   choices: number[];
   selected: number | null;
   feedback: Feedback;
   newQuestion: () => void;
   onSelect: (choice: number) => void;
-  setOperator: (op: "+" | "-") => void;
+  setOperator: (op: "+" | "-" | "mix") => void;
 };
 
 export const createQuestionSlice = (set: any, get: any): QuestionSlice => ({
   operand1: 0,
   operand2: 0,
-  operator: "+",
+  operator: "mix", // user’s preference (+, -, or mix)
+  questionOperator: "+", // actual operator for current Q
   correct: 0,
   choices: [],
   selected: null,
   feedback: null,
 
   newQuestion: () => {
+    // determine max range based on current level
     const { level } = get().stats;
     const scaledMax = INITIAL_OPERAND_MAX * level;
     const operandMax = Math.min(scaledMax, MAX_OPERAND_MAX);
-    const op = get().operator || OPERATORS[getRandomInt(OPERATORS.length - 1)];
+
+    // pick operator: if mix, randomly from OPERATORS; else use preference
+    const prefOp = get().operator as "+" | "-" | "mix";
+    const actualOp: "+" | "-" =
+      prefOp === "mix"
+        ? (OPERATORS[getRandomInt(OPERATORS.length - 1)] as "+" | "-")
+        : prefOp;
+
+    // generate operands and compute correct answer
     const a = getRandomInt(operandMax);
     const b = getRandomInt(operandMax);
-    const answer = op === "+" ? a + b : a - b;
+    const answer = actualOp === "+" ? a + b : a - b;
 
+    // update state for new question
     set({
       operand1: a,
       operand2: b,
-      operator: op,
+      questionOperator: actualOp,
       correct: answer,
-      choices: generateChoices(answer, a, b, op),
+      choices: generateChoices(answer, a, b, actualOp),
       selected: null,
       feedback: null,
     });
   },
 
   onSelect: (choice: number) => {
-    const { correct, stats, operand1, operand2, operator } = get();
+    const { correct, stats, operand1, operand2, questionOperator } = get();
     const strictMode = get().strictMode;
 
-    // helper to fire the next question
-    const next = () => {
-      if (strictMode) {
-        get().newQuestion(); // instant
-      } else {
-        setTimeout(get().newQuestion, 500); // 100ms delay
-      }
-    };
-
-    // 1) record the answer
+    // record total questions
     get().incrementQuestions();
     const isCorrect = choice === correct;
     set({ selected: choice, feedback: isCorrect ? "correct" : "wrong" });
 
     if (isCorrect) {
-      // correct‐answer logic
+      // correct: increment and potentially level up
       get().incrementCorrect();
       if (stats.corrected + 1 >= 10) {
         get().incrementLevel();
         get().resetStats();
         get().recordLevelUp();
       }
-      // next question
-      next();
     } else {
-      // wrong‐answer logic
+      // wrong: log wrong answer details
       get().incrementWrong({
         operand1,
         operand2,
-        operator,
+        operator: questionOperator,
         correct,
         selected: choice,
         timestamp: Date.now(),
       });
 
-      // if strictMode & this is the 3rd wrong → reset session
+      // strict mode: reset on 3 fails
       if (strictMode && stats.failed + 1 >= 3) {
         get().resetStats();
-        set((s: any) => ({
-          stats: {
-            ...s.stats,
-            level: 1,
-          },
-        }));
+        set((s: any) => ({ stats: { ...s.stats, level: 1 } }));
       }
-      // next question (instant in strict, 100ms otherwise)
-      next();
+    }
+
+    // trigger next question (instant in strict, else 500ms)
+    if (strictMode) {
+      get().newQuestion();
+    } else {
+      setTimeout(get().newQuestion, 500);
     }
   },
 
-  setOperator: (op: "+" | "-") => set({ operator: op }),
+  setOperator: (op: "+" | "-" | "mix") => {
+    // update user preference and immediately log
+    set({ operator: op });
+  },
 });

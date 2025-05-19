@@ -8,7 +8,7 @@ import { StyleSheet, View } from "react-native";
 const QuestionRow = () => {
   const operand1 = useAppStore((s) => s.operand1);
   const operand2 = useAppStore((s) => s.operand2);
-  const operator = useAppStore((s) => s.operator);
+  const questionOperator = useAppStore((s) => s.questionOperator);
 
   const orientation = useAppStore((s) => s.orientation);
 
@@ -37,7 +37,7 @@ const QuestionRow = () => {
             : styles.operandLandscape,
         ]}
       >
-        {operator}
+        {questionOperator}
       </CustomText>
       <CustomText
         style={[

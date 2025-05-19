@@ -236,10 +236,6 @@ const SettingsScreen: React.FC = () => {
     },
   ];
 
-  console.log(
-    (lifetimeStats.totalCorrect / lifetimeStats.totalQuestions).toFixed(3)
-  );
-
   const tips = [
     "Break complex problems into smaller, manageable steps.",
     "Double-check your answer by reversing the operation.",
@@ -317,8 +313,8 @@ const SettingsScreen: React.FC = () => {
         </Section>
 
         <Section title="Practice Operation" style={{ marginTop: Spacing.md }}>
-          <View style={{ flexDirection: "row", gap: 16 }}>
-            {["+", "-"].map((op) => (
+          <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 16 }}>
+            {["+", "-", "mix"].map((op) => (
               <TouchableOpacity
                 key={op}
                 onPress={() => setOperator(op as any)}
@@ -333,11 +329,15 @@ const SettingsScreen: React.FC = () => {
               >
                 <CustomText
                   style={{
-                    color: operator === op ? "#fff" : colors.text,
+                    color: operator === op ? Colors.white : colors.text,
                     fontWeight: "bold",
                   }}
                 >
-                  {op === "+" ? "Addition (+)" : "Subtraction (-)"}
+                  {op === "+"
+                    ? "Addition (+)"
+                    : op === "-"
+                    ? "Subtraction (-)"
+                    : "Mixed"}
                 </CustomText>
               </TouchableOpacity>
             ))}
