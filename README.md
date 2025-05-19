@@ -1,50 +1,204 @@
-# Welcome to your Expo app 👋
+# Math Leveling App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A modern, gamified mental math training application built with React Native and Expo. Practice arithmetic, track your progress, and maintain daily streaks—all with a beautiful, responsive interface and robust offline support.
 
-## Get started
+---
 
-1. Install dependencies
+## Features
 
-   ```bash
-   npm install
-   ```
+### 🧮 Math Training
 
-2. Start the app
+- **Dynamic Question Generation:** Practice addition and subtraction with randomly generated questions.
+- **Multiple Choice:** Answer via a quick-tap grid for fast-paced learning.
+- **Difficulty Progression:** Level up as you answer correctly; questions get harder as you improve.
 
-   ```bash
-   npx expo start
-   ```
+### 🎮 Gamification & Analytics
 
-In the output, you'll find options to open the app in a
+- **Streak System:** Maintain daily streaks with reminders and notifications.
+- **Statistics:** Track total questions, correct/incorrect answers, highest level, and more.
+- **Strict Mode:** Optional mode for increased challenge.
+- **Lifetime Stats:** Persistent analytics for long-term progress.
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### 🌙 Theming & UX
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+- **Light/Dark Theme:** Automatic system detection and manual override.
+- **Smooth Transitions:** Seamless theme switching and UI updates.
+- **Responsive Design:** Optimized for all device sizes and orientations.
 
-## Get a fresh project
+### ⚡ Performance & Offline
 
-When you're ready, run:
+- **MMKV Storage:** Fast, secure local storage for stats, streaks, and settings.
+- **Offline-First:** All core features work without an internet connection.
 
-```bash
-npm run reset-project
+### 🔔 Notifications
+
+- **Streak Reminders:** Daily push notifications to help you keep your streak alive.
+
+### 🛠️ Settings & Customization
+
+- **Operator Selection:** Choose which arithmetic operations to practice.
+- **Reset Stats:** Clear your progress and start fresh.
+- **Theme Toggle:** Instantly switch between light and dark modes.
+
+---
+
+## Screenshots
+
+| Home Screen                                           | Streak Badge                                            | Settings Screen                                           | Extra                                                  |
+| ----------------------------------------------------- | ------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------ |
+| ![Home](assets/screenshots/Screenshot_1747656136.png) | ![Streak](assets/screenshots/Screenshot_1747656147.png) | ![Settings](assets/screenshots/Screenshot_1747656168.png) | ![Extra](assets/screenshots/Screenshot_1747656172.png) |
+
+---
+
+## Tech Stack
+
+### Frontend
+
+- **React Native** (0.79.2) + **Expo** (53.0.9)
+- **TypeScript** for type safety
+- **Zustand** for state management
+- **MMKV** for fast local storage
+- **Expo Notifications** for reminders
+- **React Native Safe Area Context** for device compatibility
+
+### Backend
+
+- **Node.js** + **Express**
+- **MongoDB** for versioning and feedback
+- **CORS** for secure API access
+- **dotenv** for environment configuration
+- **Scheduled Health Checks** with `node-cron`
+
+---
+
+## Project Structure
+
+```
+mental_math_training_app/
+  src/
+    components/      # UI components (HomeScreen, StreakBadge, etc.)
+    context/         # Theme context and provider
+    screens/         # Main app screens (Home, Settings, RootLayout)
+    services/        # Version and update services
+    store/           # Zustand slices for state, stats, streaks
+    styles/          # Style constants
+    utils/           # Utility functions
+  backend/
+    src/
+      models/        # Mongoose models (AppVersion, Feedback)
+      routes/        # API endpoints (version, feedback)
+      index.js       # Express app entry point
+  assets/
+    images/          # App images
+    screenshots/     # App screenshots
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+---
 
-## Learn more
+## Getting Started
 
-To learn more about developing your project with Expo, look at the following resources:
+### Prerequisites
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+- Node.js
+- Bun (recommended) or npm
+- Android Studio (for Android)
+- Xcode & CocoaPods (for iOS, macOS only)
+- MongoDB (for backend)
 
-## Join the community
+### Installation
 
-Join our community of developers creating universal apps.
+1. **Clone the repository:**
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+   ```bash
+   git clone <repository-url>
+   cd mental_math_training_app
+   ```
+
+2. **Install frontend dependencies:**
+
+   ```bash
+   bun install
+   ```
+
+3. **Install backend dependencies:**
+
+   ```bash
+   cd backend
+   npm install
+   cd ..
+   ```
+
+4. **Set up environment variables:**
+
+   - Create a `.env.local` file in the root and add:
+     ```
+     EXPO_PUBLIC_RATES_API_URL=your_api_url_if_needed
+     ```
+
+5. **Start the development servers:**
+
+   ```bash
+   # Terminal 1 - Frontend
+   bunx expo start
+
+   # Terminal 2 - Backend
+   cd backend && npm run dev
+   ```
+
+---
+
+## Available Scripts
+
+### Frontend
+
+- `bun run start` — Start Expo development server
+- `bun run android` — Run on Android device/emulator
+- `bun run ios` — Run on iOS simulator
+- `bun run build:android` — Build Android preview
+- `bun run build:web` — Build web version
+- `bun run publish:expo` — Publish OTA updates
+- `bun run test` — Run tests
+- `bun run format` — Format code
+- `bun run lint` — Lint code
+
+### Backend
+
+- `npm start` — Start production server
+- `npm run dev` — Start development server with hot reload
+
+---
+
+## API Endpoints
+
+### Versioning
+
+- `GET /api/version/latest` — Get the latest app version (optionally filter by major version)
+- `POST /api/version/` — Create or update a version (for CI/CD)
+- `DELETE /api/version/:version` — Delete a version
+
+### Feedback
+
+- `POST /api/feedback/` — Submit user feedback
+- `GET /api/feedback/` — Retrieve all feedback (admin)
+
+### Health
+
+- `GET /health` — Health check endpoint
+
+---
+
+## Environment Configuration
+
+- **Development:** Debug features enabled
+- **Production:** Optimized for release
+- **Preview:** For pre-release and OTA updates
+
+---
+
+## License
+
+[MIT License](LICENSE)
+
+---
+
+_This README was generated based on the current codebase structure and features. For more details, see the source code and comments throughout the project._

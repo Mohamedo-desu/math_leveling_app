@@ -1,9 +1,8 @@
 import CustomText from "@/components/CustomText";
-import { Colors } from "@/constants/Colors";
-import { Spacing } from "@/constants/Spacing";
 import { useAppStore } from "@/store/useAppStore";
+import { styles } from "@/styles/components/QuestionRow.styles";
 import React, { memo } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 
 const QuestionRow = () => {
   const operand1 = useAppStore((s) => s.operand1);
@@ -54,38 +53,3 @@ const QuestionRow = () => {
 };
 
 export default memo(QuestionRow);
-
-const styles = StyleSheet.create({
-  questionRow: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 10,
-    backgroundColor: Colors.primary,
-    width: "90%",
-    alignSelf: "center",
-    borderRadius: Spacing.inputBorderRadius,
-    borderWidth: 1.5,
-    borderColor: Colors.white,
-    elevation: 5,
-  },
-  rowPortrait: {
-    height: 100,
-    marginBottom: 10,
-  },
-  rowLandscape: {
-    height: 70,
-    marginBottom: 5,
-  },
-  operand: {
-    fontWeight: "bold",
-    lineHeight: 56,
-    color: Colors.white,
-  },
-  operandPortrait: {
-    fontSize: 48,
-  },
-  operandLandscape: {
-    fontSize: 30,
-  },
-});

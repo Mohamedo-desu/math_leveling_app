@@ -1,8 +1,8 @@
-import { Spacing } from "@/constants/Spacing";
 import { useTheme } from "@/context/ThemeContext";
 import { useAppStore } from "@/store/useAppStore";
+import { styles } from "@/styles/components/StatsHeader.styles";
 import React, { memo } from "react";
-import { StyleSheet, View } from "react-native";
+import { View } from "react-native";
 import AnimatedNumbers from "react-native-animated-numbers";
 import CustomText from "./CustomText";
 
@@ -91,23 +91,3 @@ const StatsHeader = () => {
 };
 
 export default memo(StatsHeader);
-
-const styles = StyleSheet.create({
-  container: {
-    width: "90%",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    borderRadius: Spacing.inputBorderRadius,
-    alignSelf: "center",
-  },
-  item: {
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  label: {},
-  corrected: {},
-  failed: {},
-  questions: {},
-  level: {},
-});

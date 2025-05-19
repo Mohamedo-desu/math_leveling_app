@@ -1,8 +1,9 @@
 import { mmkvStorage } from "@/store/storage";
 import { STREAK_KEY, STREAK_TIME_KEY } from "@/utils";
 import * as Notifications from "expo-notifications";
+import { Alert } from "react-native";
 
-let reminderId: string | null = null;
+const REMINDER_ID_KEY = "streak-reminder-id";
 
 function getDaysDiffLocal(date1: string, date2: string) {
   const [y1, m1, d1] = date1.split("-").map(Number);
@@ -13,7 +14,40 @@ function getDaysDiffLocal(date1: string, date2: string) {
   return Math.floor((day1.getTime() - day2.getTime()) / msPerDay);
 }
 
+async function getPersistedReminderId(): Promise<string | null> {
+  return mmkvStorage.getItem(REMINDER_ID_KEY) || null;
+}
+
+async function setPersistedReminderId(id: string) {
+  mmkvStorage.setItem(REMINDER_ID_KEY, id);
+}
+
+async function clearPersistedReminderId() {
+  mmkvStorage.removeItem(REMINDER_ID_KEY);
+}
+
+async function ensureNotificationPermissions(): Promise<boolean> {
+  const { status: existingStatus } = await Notifications.getPermissionsAsync();
+  let finalStatus = existingStatus;
+  if (existingStatus !== "granted") {
+    const { status } = await Notifications.requestPermissionsAsync();
+    finalStatus = status;
+  }
+  return finalStatus === "granted";
+}
+
 async function scheduleStreakReminderForTomorrow() {
+  // Check notification permissions first
+  const hasPermission = await ensureNotificationPermissions();
+  if (!hasPermission) {
+    Alert.alert(
+      "Enable Notifications",
+      "Notification permissions are required to receive streak reminders. Please enable notifications in your device settings.",
+      [{ text: "OK" }]
+    );
+    return;
+  }
+
   const now = new Date();
   const tomorrow = new Date(now);
   tomorrow.setDate(now.getDate() + 1);
@@ -22,9 +56,12 @@ async function scheduleStreakReminderForTomorrow() {
   const secondsUntil = Math.floor((tomorrow.getTime() - now.getTime()) / 1000);
 
   // Cancel any existing reminder
-  if (reminderId) {
-    await Notifications.cancelScheduledNotificationAsync(reminderId);
-    reminderId = null;
+  const existingId = await getPersistedReminderId();
+  if (existingId) {
+    try {
+      await Notifications.cancelScheduledNotificationAsync(existingId);
+    } catch {}
+    await clearPersistedReminderId();
   }
 
   const id = await Notifications.scheduleNotificationAsync({
@@ -40,13 +77,16 @@ async function scheduleStreakReminderForTomorrow() {
     } as any,
   });
 
-  reminderId = id;
+  await setPersistedReminderId(id);
 }
 
 async function cancelStreakReminder() {
-  if (reminderId) {
-    await Notifications.cancelScheduledNotificationAsync(reminderId);
-    reminderId = null;
+  const existingId = await getPersistedReminderId();
+  if (existingId) {
+    try {
+      await Notifications.cancelScheduledNotificationAsync(existingId);
+    } catch {}
+    await clearPersistedReminderId();
   }
 }
 

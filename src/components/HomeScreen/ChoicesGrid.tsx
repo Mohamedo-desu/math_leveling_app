@@ -1,11 +1,11 @@
 import CustomText from "@/components/CustomText";
 import { Colors } from "@/constants/Colors";
-import { Spacing } from "@/constants/Spacing";
 import { useTheme } from "@/context/ThemeContext";
 import { useAppStore } from "@/store/useAppStore";
+import { styles } from "@/styles/components/ChoicesGrid.styles";
 import * as Haptics from "expo-haptics";
 import React, { memo } from "react";
-import { StyleSheet, TouchableOpacity, View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 
 const ChoicesGrid = () => {
   const choices = useAppStore((s) => s.choices);
@@ -78,20 +78,3 @@ const ChoicesGrid = () => {
 };
 
 export default memo(ChoicesGrid);
-
-const styles = StyleSheet.create({
-  choicesContainer: {
-    gap: 10,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "center",
-    width: "90%",
-  },
-  choiceButton: {
-    borderRadius: Spacing.inputBorderRadius,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 1,
-    borderWidth: 2,
-  },
-});

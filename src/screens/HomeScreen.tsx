@@ -4,17 +4,43 @@ import StreakBadge from "@/components/HomeScreen/StreakBadge";
 import { useTheme } from "@/context/ThemeContext";
 import { useVersion } from "@/hooks/useVersion";
 import { useAppStore } from "@/store/useAppStore";
-import React from "react";
-import { StyleSheet, View } from "react-native";
+import { styles } from "@/styles/screen/HomeScreen.styles";
+import React, { useEffect, useState } from "react";
+import { BackHandler, Platform, ToastAndroid, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
   const { colors } = useTheme();
   const insets = useSafeAreaInsets();
+  const [lastBackPress, setLastBackPress] = useState(0);
 
   const orientation = useAppStore((s) => s.orientation);
 
   const { currentVersion } = useVersion();
+
+  // Add back button handler
+  useEffect(() => {
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      () => {
+        const currentTime = new Date().getTime();
+        if (currentTime - lastBackPress < 2000) {
+          // If pressed within 2 seconds, exit the app
+          BackHandler.exitApp();
+          return true;
+        }
+        // Show toast message and update last press time
+        if (Platform.OS === "android") {
+          ToastAndroid.show("Press back again to exit", ToastAndroid.SHORT);
+        }
+        setLastBackPress(currentTime);
+        return true; // Prevent default behavior
+      }
+    );
+
+    // Cleanup listener on unmount
+    return () => backHandler.remove();
+  }, [lastBackPress]);
 
   return (
     <View
@@ -43,23 +69,3 @@ export default function HomeScreen() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  screen: {
-    width: "100%",
-    minHeight: "100%",
-  },
-  version: {
-    textAlign: "center",
-    fontSize: 12,
-    position: "absolute",
-    left: 0,
-    right: 0,
-  },
-  versionPortrait: {
-    // Add portrait-specific styles if needed
-  },
-});
