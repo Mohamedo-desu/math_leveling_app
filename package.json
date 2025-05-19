@@ -1,7 +1,7 @@
 {
   "name": "mental_math_training_app",
   "main": "App.tsx",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "scripts": {
     "start": "expo start",
     "build:android": "eas build --platform android --profile preview",

@@ -23,7 +23,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
     name: name,
-    version: "0.1.0",
+    version: "1.0.0",
     slug: PROJECT_SLUG,
     orientation: "default",
     newArchEnabled: true,
@@ -62,7 +62,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
         "expo-splash-screen",
         {
           image: "./assets/images/splash-icon.png",
-          imageWidth: 200,
+          imageWidth: 100,
           resizeMode: "contain",
           backgroundColor: "#ffffff",
           dark: {
