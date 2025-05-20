@@ -7,7 +7,7 @@ import * as Haptics from "expo-haptics";
 import React, { memo } from "react";
 import { TouchableOpacity, View } from "react-native";
 
-const ChoicesGrid = () => {
+const ChoicesGrid = ({ onCorrectAnswer }: { onCorrectAnswer?: () => void }) => {
   const choices = useAppStore((s) => s.choices);
   const selected = useAppStore((s) => s.selected);
   const feedback = useAppStore((s) => s.feedback);
@@ -40,6 +40,7 @@ const ChoicesGrid = () => {
             await Haptics.notificationAsync(
               Haptics.NotificationFeedbackType.Success
             );
+            if (onCorrectAnswer) onCorrectAnswer();
           } else {
             await Haptics.notificationAsync(
               Haptics.NotificationFeedbackType.Error

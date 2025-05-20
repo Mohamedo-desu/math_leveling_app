@@ -30,6 +30,8 @@ export type StatsSlice = {
   resetLifetimeStats: () => void;
   strictMode: boolean;
   toggleStrictMode: () => void;
+  timerMode: boolean;
+  toggleTimerMode: () => void;
 };
 
 export const createStatsSlice = (set: any): StatsSlice => ({
@@ -49,6 +51,11 @@ export const createStatsSlice = (set: any): StatsSlice => ({
   toggleStrictMode: () =>
     set((state: any) => ({
       strictMode: !state.strictMode,
+    })),
+  timerMode: false,
+  toggleTimerMode: () =>
+    set((state: any) => ({
+      timerMode: !state.timerMode,
     })),
   incrementCorrect: () =>
     set((state: any) => {
@@ -121,7 +128,7 @@ export const createStatsSlice = (set: any): StatsSlice => ({
         totalCorrect: 0,
         totalWrong: 0,
         totalQuestions: 0,
-        highestLevel: 1,
+        highestLevel: 0,
         mostConsecutiveCorrect: 0,
         mostConsecutiveWrong: 0,
       },

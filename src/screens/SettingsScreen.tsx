@@ -5,7 +5,7 @@ import { useTheme } from "@/context/ThemeContext";
 import { useAppStore } from "@/store/useAppStore";
 import { styles } from "@/styles/screen/SettingsScreen.styles";
 import { Ionicons } from "@expo/vector-icons";
-import React, { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import {
   Alert,
   BackHandler,
@@ -149,6 +149,9 @@ const SettingsScreen: React.FC = () => {
 
   const strictMode = useAppStore((s) => s.strictMode);
   const toggleStrictMode = useAppStore((s) => s.toggleStrictMode);
+
+  const timerMode = useAppStore((s) => s.timerMode);
+  const toggleTimerMode = useAppStore((s) => s.toggleTimerMode);
 
   useEffect(() => {
     const back = BackHandler.addEventListener("hardwareBackPress", () => {
@@ -307,6 +310,29 @@ const SettingsScreen: React.FC = () => {
               value={strictMode}
               onValueChange={toggleStrictMode}
               thumbColor={strictMode ? colors.primary : colors.gray[400]}
+              trackColor={{ false: colors.gray[200], true: colors.primary }}
+            />
+          </View>
+        </Section>
+
+        <Section title="Timer Mode" style={{ marginBottom: Spacing.md }}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <View style={{ flex: 1 }}>
+              <CustomText style={{ color: colors.text, fontSize: 13 }}>
+                If enabled: a timer ring will appear and decrease unless you
+                answer correctly.
+              </CustomText>
+            </View>
+            <Switch
+              value={timerMode}
+              onValueChange={toggleTimerMode}
+              thumbColor={timerMode ? colors.primary : colors.gray[400]}
               trackColor={{ false: colors.gray[200], true: colors.primary }}
             />
           </View>

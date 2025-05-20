@@ -5,7 +5,11 @@ import { View } from "react-native";
 import ChoicesGrid from "./ChoicesGrid";
 import QuestionRow from "./QuestionRow";
 
-const QuestionCard = () => {
+const QuestionCard = ({
+  onCorrectAnswer,
+}: {
+  onCorrectAnswer?: () => void;
+}) => {
   const newQuestion = useAppStore((s) => s.newQuestion);
 
   const orientation = useAppStore((s) => s.orientation);
@@ -24,7 +28,7 @@ const QuestionCard = () => {
       ]}
     >
       <QuestionRow />
-      <ChoicesGrid />
+      <ChoicesGrid onCorrectAnswer={onCorrectAnswer} />
     </View>
   );
 };
