@@ -52,6 +52,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       eas: {
         projectId: EAS_PROJECT_ID,
       },
+      profile: process.env.APP_ENV,
     },
     web: {
       bundler: "metro",

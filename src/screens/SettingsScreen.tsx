@@ -229,12 +229,12 @@ const SettingsScreen: React.FC = () => {
     },
     {
       icon: "trending-up",
-      label: "Consecutive Rights",
+      label: "Consecutive Passed",
       value: lifetimeStats.mostConsecutiveCorrect || 0,
     },
     {
       icon: "trending-down",
-      label: "Consecutive Wrongs",
+      label: "Consecutive Failed",
       value: lifetimeStats.mostConsecutiveWrong || 0,
     },
   ];
@@ -315,7 +315,7 @@ const SettingsScreen: React.FC = () => {
           </View>
         </Section>
 
-        <Section title="Timer Mode" style={{ marginBottom: Spacing.md }}>
+        {/* <Section title="Timer Mode" style={{ marginBottom: Spacing.md }}>
           <View
             style={{
               flexDirection: "row",
@@ -336,7 +336,7 @@ const SettingsScreen: React.FC = () => {
               trackColor={{ false: colors.gray[200], true: colors.primary }}
             />
           </View>
-        </Section>
+        </Section> */}
 
         <Section title="Practice Operation" style={{ marginTop: Spacing.md }}>
           <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 16 }}>
